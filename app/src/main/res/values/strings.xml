@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MyFirstApp</string>
+    <string name="title_activity_detailed">DetailedActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_tetettttt">tetettttt</string>
+    <string name="title_activity_teste">TesteActivity</string>
+    <string name="person_name">Person Name</string>
+    <string name="tecnologias">Tecnologias</string>
+</resources>
