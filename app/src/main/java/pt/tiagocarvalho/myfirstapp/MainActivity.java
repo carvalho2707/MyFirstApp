@@ -1,6 +1,8 @@
 package pt.tiagocarvalho.myfirstapp;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -65,7 +67,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), DetailedActivity.class);
                 Gson gson = new Gson();
                 intent.putExtra(Constants.SELECTED_USER, gson.toJson(item, User.class));
-                startActivity(intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    startActivity(intent,
+                            ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
+                } else {
+                    startActivity(intent);
+                }
             }
         });
         recyclerView.setAdapter(adapter);
@@ -105,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         user.setName("Tiago Carvalho");
         user.setAge(23);
         user.setTechList(list);
+        user.setImageId(1);
         userArrayList.add(user);
 
         list = new ArrayList<String>() {{
@@ -114,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         user.setName("João Carvalho");
         user.setAge(20);
         user.setTechList(list);
+        user.setImageId(2);
         userArrayList.add(user);
 
         list = new ArrayList<String>() {{
@@ -124,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         user = new User();
         user.setName("Filipe Carvalho");
         user.setAge(25);
+        user.setImageId(3);
         user.setTechList(list);
         userArrayList.add(user);
 
@@ -134,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         user.setName("Sebastião Carvalho");
         user.setAge(50);
         user.setTechList(list);
+        user.setImageId(1);
         userArrayList.add(user);
 
         list = new ArrayList<String>() {{
@@ -144,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
         user.setName("Andre Carvalho");
         user.setAge(30);
         user.setTechList(list);
+        user.setImageId(2);
         userArrayList.add(user);
 
         list = new ArrayList<String>() {{
@@ -154,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
         user.setName("Mario Carvalho");
         user.setAge(26);
         user.setTechList(list);
+        user.setImageId(3);
         userArrayList.add(user);
 
         list = new ArrayList<String>() {{
@@ -164,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
         user.setName("Abilio Carvalho");
         user.setAge(37);
         user.setTechList(list);
+        user.setImageId(1);
         userArrayList.add(user);
 
         list = new ArrayList<String>() {{
@@ -174,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
         user.setName("Gertudes Carvalho");
         user.setAge(27);
         user.setTechList(list);
+        user.setImageId(2);
         userArrayList.add(user);
 
         list = new ArrayList<String>() {{
@@ -184,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
         user.setName("Sofia Carvalho");
         user.setAge(22);
         user.setTechList(list);
+        user.setImageId(3);
         userArrayList.add(user);
 
         list = new ArrayList<String>() {{
@@ -194,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
         user.setName("Ricardo Carvalho");
         user.setAge(29);
         user.setTechList(list);
+        user.setImageId(1);
         userArrayList.add(user);
 
         return userArrayList;

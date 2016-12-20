@@ -11,6 +11,7 @@ public class User implements Serializable {
     private String name;
     private int age;
     private ArrayList<String> techList;
+    private int imageId;
 
     public String getName() {
         return name;
@@ -34,5 +35,13 @@ public class User implements Serializable {
 
     public void setTechList(ArrayList<String> techList) {
         this.techList = techList;
+    }
+
+    public int getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
     }
 }

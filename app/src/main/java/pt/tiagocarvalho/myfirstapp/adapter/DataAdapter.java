@@ -66,14 +66,20 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             tvUserAge = (TextView) view.findViewById(R.id.tvUserAge);
         }
 
-        public void bind(final User item, final OnItemClickListener listener) {
-            tvUserName.setText(item.getName());
-            ivUserImage.setImageResource(R.mipmap.ic_launcher);
-            tvUserAge.setText(item.getAge() + " Years Old");
+        public void bind(final User user, final OnItemClickListener listener) {
+            tvUserName.setText(user.getName());
+            if (user.getImageId() == 1) {
+                ivUserImage.setImageResource(R.drawable.android_1);
+            } else if (user.getImageId() == 2) {
+                ivUserImage.setImageResource(R.drawable.android_2);
+            } else {
+                ivUserImage.setImageResource(R.drawable.android_3);
+            }
+            tvUserAge.setText(user.getAge() + " Years Old");
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemClickListener.onItemClick(item);
+                    itemClickListener.onItemClick(user);
                 }
             });
         }
