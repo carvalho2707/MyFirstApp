@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string-array name="search_state">
+        <item>Ambos</item>
+        <item>Em Projecto</item>
+        <item>Sem Projecto</item>
+    </string-array>
+
+
+</resources>

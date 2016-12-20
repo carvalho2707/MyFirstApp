@@ -28,9 +28,7 @@ import pt.tiagocarvalho.myfirstapp.R;
 
 public class TagEditText extends EditText {
     TextWatcher textWatcher;
-
     String lastString;
-
     String separator = ",";
 
     public TagEditText(Context context, AttributeSet attrs) {
@@ -38,19 +36,15 @@ public class TagEditText extends EditText {
         init();
     }
 
-
     private void init() {
         setMovementMethod(LinkMovementMethod.getInstance());
-
         textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
@@ -58,32 +52,23 @@ public class TagEditText extends EditText {
                 String thisString = s.toString();
                 if (thisString.length() > 0 && !thisString.equals(lastString)) {
                     format();
-
                 }
             }
         };
-
         addTextChangedListener(textWatcher);
     }
 
-
     private void format() {
-
         SpannableStringBuilder sb = new SpannableStringBuilder();
         String fullString = getText().toString();
-
         String[] strings = fullString.split(separator);
-
-
         for (int i = 0; i < strings.length; i++) {
-
             String string = strings[i];
             sb.append(string);
 
             if (fullString.charAt(fullString.length() - 1) != separator.charAt(0) && i == strings.length - 1) {
                 break;
             }
-
             BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(createTokenView(string));
             bd.setBounds(0, 0, bd.getIntrinsicWidth(), bd.getIntrinsicHeight());
 
@@ -102,17 +87,13 @@ public class TagEditText extends EditText {
             }
         }
 
-
         lastString = sb.toString();
-
         setText(sb);
         setSelection(sb.length());
 
     }
 
     public View createTokenView(String text) {
-
-
         LinearLayout l = new LinearLayout(getContext());
         l.setOrientation(LinearLayout.HORIZONTAL);
         l.setBackgroundResource(R.drawable.bordered_rectangle_rounded_corners);

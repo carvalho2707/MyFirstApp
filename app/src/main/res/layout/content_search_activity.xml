@@ -8,21 +8,35 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
+    rsb:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="pt.tiagocarvalho.myfirstapp.SearchActivity">
+
+    <TextView
+        android:text="@string/search_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:textColor="@android:color/holo_blue_light"
+        android:id="@+id/tvSearchTitle"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="30dp" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:ems="10"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:id="@+id/etPersonName"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:hint="@string/person_name" />
+        android:layout_below="@+id/tvSearchTitle"
+        android:hint="@string/person_name"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <pt.tiagocarvalho.myfirstapp.views.TagEditText
         android:layout_width="wrap_content"
@@ -35,15 +49,61 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+    <TextView
+        android:text="@string/tvAge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_alignBottom="@+id/rsbAge"
+        android:layout_below="@+id/etTecnologias"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center_vertical|center_horizontal"
+        android:textSize="18sp" />
+
     <org.florescu.android.rangeseekbar.RangeSeekBar
         android:layout_width="wrap_content"
         android:id="@+id/rsbAge"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         rsb:absoluteMaxValue="60"
+        rsb:showLabels="false"
         rsb:absoluteMinValue="20"
         rsb:textAboveThumbsColor="@android:color/black"
         android:layout_below="@+id/etTecnologias"
-        />
+        android:layout_toRightOf="@+id/textView"
+        android:layout_toEndOf="@+id/textView"
+        android:layout_marginLeft="5dp" />
+
+    <Button
+        android:text="@string/search_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnSearch"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="@string/search_estado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvStateSearch"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textSize="18sp" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/search_state"
+        android:id="@+id/spinnerState"
+        android:layout_below="@+id/rsbAge"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/etTecnologias"
+        android:layout_alignLeft="@+id/btnSearch"
+        android:layout_alignStart="@+id/btnSearch" />
+
+
 </RelativeLayout>
