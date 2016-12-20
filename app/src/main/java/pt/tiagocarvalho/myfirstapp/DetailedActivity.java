@@ -9,12 +9,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import pt.tiagocarvalho.myfirstapp.fragments.EducationFragment;
 import pt.tiagocarvalho.myfirstapp.fragments.OverviewFragment;
 import pt.tiagocarvalho.myfirstapp.fragments.ProjectsFragment;
+import pt.tiagocarvalho.myfirstapp.model.User;
+import pt.tiagocarvalho.myfirstapp.utils.Constants;
 
 public class DetailedActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -32,6 +36,15 @@ public class DetailedActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        Gson gson = new Gson();
+        String result = this.getIntent().getExtras().getString(Constants.SELECTED_USER);
+        User user = null;
+        if (result != null) {
+            user = gson.fromJson(result, User.class);
+            getSupportActionBar().setTitle(user.getName());
+        }
 
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);

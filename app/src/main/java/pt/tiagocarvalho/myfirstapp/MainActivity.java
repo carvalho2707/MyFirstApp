@@ -1,26 +1,43 @@
 package pt.tiagocarvalho.myfirstapp;
 
 import android.app.ActivityOptions;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Contacts;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Random;
 
 import pt.tiagocarvalho.myfirstapp.utils.Constants;
 import pt.tiagocarvalho.myfirstapp.adapter.DataAdapter;
 import pt.tiagocarvalho.myfirstapp.model.User;
+import pt.tiagocarvalho.myfirstapp.utils.Utils;
 
 public class MainActivity extends AppCompatActivity {
+    private String personName;
+    private String personState;
+    private int minAge;
+    private int maxAge;
+    private String techList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,19 +46,17 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<User> userArrayList = generateData();
         Bundle extras = this.getIntent().getExtras();
         if (extras != null) {
-            String personName = extras.getString(Constants.PERSON_NAME);
-            String personState = extras.getString(Constants.PERSON_STATE);
-            int minAge = extras.getInt(Constants.PERSON_AGE_MIN);
-            int maxAge = extras.getInt(Constants.PERSON_AGE_MAX);
-            String techList = extras.getString(Constants.PERSON_TECH);
-            userArrayList = filterData(userArrayList, personName, minAge, maxAge, techList, personState);
+            personName = extras.getString(Constants.PERSON_NAME);
+            personState = extras.getString(Constants.PERSON_STATE);
+            minAge = extras.getInt(Constants.PERSON_AGE_MIN);
+            maxAge = extras.getInt(Constants.PERSON_AGE_MAX);
+            techList = extras.getString(Constants.PERSON_TECH);
+            //userArrayList = Utils.filterData(userArrayList, personName, minAge, maxAge, techList, personState);
         }
 
-        if (userArrayList.size() == 0) {
-            setContentView(R.layout.activity_main_no_results);
-        } else {
-            setContentView(R.layout.activity_main);
-        }
+
+        setContentView(R.layout.activity_main);
+
 
         //create the view
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.card_recycler_view);
@@ -49,17 +64,6 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        // Display icon in the toolbar
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         DataAdapter adapter = new DataAdapter(userArrayList, new DataAdapter.OnItemClickListener() {
             @Override
@@ -76,6 +80,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         recyclerView.setAdapter(adapter);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Display icon in the toolbar
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
     }
 
     @Override
@@ -100,150 +115,63 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        savedInstanceState.putString(Constants.PERSON_NAME, personName);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
     private ArrayList<User> generateData() {
         ArrayList<User> userArrayList = new ArrayList<>();
-
+        Random rand = new Random();
         ArrayList<String> list = new ArrayList<String>() {{
             add("Java");
             add("SQL");
             add("Android");
         }};
-        User user = new User();
-        user.setName("Tiago Carvalho");
-        user.setAge(23);
-        user.setTechList(list);
-        user.setImageId(1);
-        userArrayList.add(user);
 
-        list = new ArrayList<String>() {{
-            add("Java");
-        }};
-        user = new User();
-        user.setName("João Carvalho");
-        user.setAge(20);
-        user.setTechList(list);
-        user.setImageId(2);
-        userArrayList.add(user);
+        ContentResolver cr = MainActivity.this.getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
 
-        list = new ArrayList<String>() {{
-            add("SQL");
-            add("DataMining");
-            add("JS");
-        }};
-        user = new User();
-        user.setName("Filipe Carvalho");
-        user.setAge(25);
-        user.setImageId(3);
-        user.setTechList(list);
-        userArrayList.add(user);
+                User user = new User();
+                String id = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME));
 
-        list = new ArrayList<String>() {{
-            add("Management");
-        }};
-        user = new User();
-        user.setName("Sebastião Carvalho");
-        user.setAge(50);
-        user.setTechList(list);
-        user.setImageId(1);
-        userArrayList.add(user);
-
-        list = new ArrayList<String>() {{
-            add("Java");
-            add("SQL");
-        }};
-        user = new User();
-        user.setName("Andre Carvalho");
-        user.setAge(30);
-        user.setTechList(list);
-        user.setImageId(2);
-        userArrayList.add(user);
-
-        list = new ArrayList<String>() {{
-            add("Java");
-            add("SQL");
-        }};
-        user = new User();
-        user.setName("Mario Carvalho");
-        user.setAge(26);
-        user.setTechList(list);
-        user.setImageId(3);
-        userArrayList.add(user);
-
-        list = new ArrayList<String>() {{
-            add("Java");
-            add("SQL");
-        }};
-        user = new User();
-        user.setName("Abilio Carvalho");
-        user.setAge(37);
-        user.setTechList(list);
-        user.setImageId(1);
-        userArrayList.add(user);
-
-        list = new ArrayList<String>() {{
-            add("Java");
-            add("SQL");
-        }};
-        user = new User();
-        user.setName("Gertudes Carvalho");
-        user.setAge(27);
-        user.setTechList(list);
-        user.setImageId(2);
-        userArrayList.add(user);
-
-        list = new ArrayList<String>() {{
-            add("Java");
-            add("SQL");
-        }};
-        user = new User();
-        user.setName("Sofia Carvalho");
-        user.setAge(22);
-        user.setTechList(list);
-        user.setImageId(3);
-        userArrayList.add(user);
-
-        list = new ArrayList<String>() {{
-            add("Java");
-            add("SQL");
-        }};
-        user = new User();
-        user.setName("Ricardo Carvalho");
-        user.setAge(29);
-        user.setTechList(list);
-        user.setImageId(1);
-        userArrayList.add(user);
-
-        return userArrayList;
-    }
-
-    public ArrayList<User> filterData(ArrayList<User> userList, String personName, int minAge, int maxAge, String techList, String state) {
-        ArrayList<User> userFiltered = new ArrayList<>();
-        for (User user : userList) {
-            boolean nameOk = true;
-            if (!TextUtils.isEmpty(personName)) {
-                if (!personName.equals(user.getName())) {
-                    nameOk = false;
+                user.setName(name);
+                user.setAge(20 + rand.nextInt(50));
+                user.setTechList(list);
+                int idPic = rand.nextInt(3);
+                if (idPic == 0) {
+                    user.setImageId(1);
+                } else if (idPic == 1) {
+                    user.setImageId(2);
+                } else {
+                    user.setImageId(3);
                 }
-            }
-            boolean techOk = true;
-            if (!TextUtils.isEmpty(techList)) {
-                String[] techs = techList.split(",");
-                for (String tech : techs) {
-                    if (!user.getTechList().contains(tech)) {
-                        techOk = false;
-                    }
+                if (!TextUtils.isEmpty(name)) {
+                    userArrayList.add(user);
                 }
-            }
-
-            boolean ageOk = true;
-            if (user.getAge() < minAge || user.getAge() > maxAge) {
-                ageOk = false;
-            }
-            if (nameOk && techOk && ageOk) {
-                userFiltered.add(user);
             }
         }
-        return userFiltered;
+        Collections.sort(userArrayList, new Comparator<User>() {
+            @Override
+            public int compare(User o1, User o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        return userArrayList;
     }
 
 }
