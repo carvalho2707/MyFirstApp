@@ -3,8 +3,10 @@ package pt.tiagocarvalho.myfirstapp.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,12 +99,58 @@ public class DBHelper extends SQLiteOpenHelper {
         return recursoList;
     }
 
-    /*public int getContactsCount() {
-    }*/
+    public int getRecursosCount() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int numRows = (int) DatabaseUtils.queryNumEntries(db, RECURSO_TABLE_NAME);
+        return numRows;
+    }
 
-   /* public int updateContact(Contact contact) {
-    }*/
+    public int updateRecurso(Recurso recurso) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(RECURSO_COLUMN_NAME, recurso.getName());
+        contentValues.put(RECURSO_COLUMN_EMAIL, recurso.getEmail());
+        contentValues.put(RECURSO_COLUMN_AGE, recurso.getAge());
+        contentValues.put(RECURSO_COLUMN_IMAGE_ID, recurso.getImageId());
+        return db.update(RECURSO_TABLE_NAME, contentValues, "id = ? ", new String[]{Integer.toString(recurso.getId())});
+    }
 
-   /* public void deleteContact(Contact contact) {
-    }*/
+    public int deleteRecurso(Recurso recurso) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(RECURSO_TABLE_NAME,
+                "id = ? ",
+                new String[]{Integer.toString(recurso.getId())});
+    }
+
+    public ArrayList<Recurso> queryRecursos(String name, int minAge, int maxAge) {
+        ArrayList<Recurso> recursoList = new ArrayList<Recurso>();
+        // Select All Query
+        StringBuilder selectQuery = new StringBuilder("SELECT  * FROM " + RECURSO_TABLE_NAME);
+
+        selectQuery.append(" where age > " + minAge);
+        selectQuery.append(" and age < " + maxAge);
+
+        if (!TextUtils.isEmpty(name)) {
+            selectQuery.append(" and name = " + name);
+        }
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery.toString(), null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                Recurso recurso = new Recurso();
+                recurso.setId(cursor.getInt(0));
+                recurso.setName(cursor.getString(1));
+                recurso.setEmail(cursor.getString(2));
+                recurso.setAge(cursor.getInt(3));
+                recurso.setImageId(cursor.getInt(4));
+
+                recursoList.add(recurso);
+            } while (cursor.moveToNext());
+        }
+
+        return recursoList;
+    }
 }

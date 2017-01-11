@@ -17,7 +17,7 @@ import java.util.List;
 import pt.tiagocarvalho.myfirstapp.fragments.EducationFragment;
 import pt.tiagocarvalho.myfirstapp.fragments.OverviewFragment;
 import pt.tiagocarvalho.myfirstapp.fragments.ProjectsFragment;
-import pt.tiagocarvalho.myfirstapp.model.User;
+import pt.tiagocarvalho.myfirstapp.model.Recurso;
 import pt.tiagocarvalho.myfirstapp.utils.Constants;
 
 public class DetailedActivity extends AppCompatActivity {
@@ -39,11 +39,11 @@ public class DetailedActivity extends AppCompatActivity {
 
 
         Gson gson = new Gson();
-        String result = this.getIntent().getExtras().getString(Constants.SELECTED_USER);
-        User user = null;
+        String result = this.getIntent().getExtras().getString(Constants.SELECTED_RECURSO);
+        Recurso recurso = null;
         if (result != null) {
-            user = gson.fromJson(result, User.class);
-            getSupportActionBar().setTitle(user.getName());
+            recurso = gson.fromJson(result, Recurso.class);
+            getSupportActionBar().setTitle(recurso.getName());
         }
 
         setupViewPager(viewPager);

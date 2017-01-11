@@ -27,8 +27,8 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.app_bar_search);
 
         rangeSeekBar = (RangeSeekBar<Integer>) findViewById(R.id.rsbAge);
-        rangeSeekBar.setSelectedMinValue(20);
-        rangeSeekBar.setSelectedMaxValue(60);
+        rangeSeekBar.setSelectedMinValue(0);
+        rangeSeekBar.setSelectedMaxValue(100);
 
         etPersonName = (EditText) findViewById(R.id.etPersonName);
         etTecnologias = (TagEditText) findViewById(R.id.etTecnologias);

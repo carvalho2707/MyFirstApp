@@ -1,31 +1,24 @@
 package pt.tiagocarvalho.myfirstapp;
 
 import android.app.ActivityOptions;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Random;
 
-import pt.tiagocarvalho.myfirstapp.utils.Constants;
 import pt.tiagocarvalho.myfirstapp.adapter.DataAdapter;
-import pt.tiagocarvalho.myfirstapp.model.User;
-import pt.tiagocarvalho.myfirstapp.utils.Utils;
+import pt.tiagocarvalho.myfirstapp.db.DBHelper;
+import pt.tiagocarvalho.myfirstapp.model.Recurso;
+import pt.tiagocarvalho.myfirstapp.utils.Constants;
 
 public class ResultsActivity extends AppCompatActivity {
     private String personName;
@@ -33,12 +26,15 @@ public class ResultsActivity extends AppCompatActivity {
     private int minAge;
     private int maxAge;
     private String techList;
+    private DBHelper myDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ArrayList<User> userArrayList = generateData();
+        myDb = new DBHelper(this);
+
+        ArrayList<Recurso> recursoList = null;
         Bundle extras = this.getIntent().getExtras();
         if (extras != null) {
             personName = extras.getString(Constants.PERSON_NAME);
@@ -46,11 +42,10 @@ public class ResultsActivity extends AppCompatActivity {
             minAge = extras.getInt(Constants.PERSON_AGE_MIN);
             maxAge = extras.getInt(Constants.PERSON_AGE_MAX);
             techList = extras.getString(Constants.PERSON_TECH);
-            userArrayList = Utils.filterData(userArrayList, personName, minAge, maxAge, techList, personState);
+            recursoList = myDb.queryRecursos(personName, minAge, maxAge);
         }
 
-
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_results);
 
 
         //create the view
@@ -60,12 +55,12 @@ public class ResultsActivity extends AppCompatActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
 
-        DataAdapter adapter = new DataAdapter(userArrayList, new DataAdapter.OnItemClickListener() {
+        DataAdapter adapter = new DataAdapter(recursoList, new DataAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(User item) {
+            public void onItemClick(Recurso item) {
                 Intent intent = new Intent(getApplicationContext(), DetailedActivity.class);
                 Gson gson = new Gson();
-                intent.putExtra(Constants.SELECTED_USER, gson.toJson(item, User.class));
+                intent.putExtra(Constants.SELECTED_RECURSO, gson.toJson(item, Recurso.class));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     startActivity(intent,
                             ActivityOptions.makeSceneTransitionAnimation(ResultsActivity.this).toBundle());
@@ -123,58 +118,4 @@ public class ResultsActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
     }
-
-    private ArrayList<User> generateData() {
-        ArrayList<User> userArrayList = new ArrayList<>();
-        Random rand = new Random();
-        ArrayList<String> list1 = new ArrayList<String>() {{
-            add("Java");
-            add("SQL");
-            add("Android");
-        }};
-        ArrayList<String> list2 = new ArrayList<String>() {{
-            add("Android");
-        }};
-
-        ContentResolver cr = ResultsActivity.this.getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-        if (cur.getCount() > 0) {
-            while (cur.moveToNext()) {
-
-                User user = new User();
-                String id = cur.getString(cur.getColumnIndex(
-                        ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(
-                        ContactsContract.Contacts.DISPLAY_NAME));
-
-                user.setName(name);
-                user.setAge(20 + rand.nextInt(50));
-                int idPic = rand.nextInt(3);
-                if (idPic == 0) {
-                    user.setImageId(1);
-                } else if (idPic == 1) {
-                    user.setImageId(2);
-                } else {
-                    user.setImageId(3);
-                }
-                if (!TextUtils.isEmpty(name)) {
-                    userArrayList.add(user);
-                }
-                idPic = rand.nextInt(2);
-                if (idPic == 0) {
-                    user.setTechList(list1);
-                } else if (idPic == 1) {
-                    user.setTechList(list2);
-                }
-            }
-        }
-        Collections.sort(userArrayList, new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
-        return userArrayList;
-    }
-
 }

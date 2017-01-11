@@ -12,18 +12,18 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import pt.tiagocarvalho.myfirstapp.R;
-import pt.tiagocarvalho.myfirstapp.model.User;
+import pt.tiagocarvalho.myfirstapp.model.Recurso;
 
 /**
  * Created by tiago.carvalho on 12/19/16.
  */
 
 public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
-    private ArrayList<User> userList;
+    private ArrayList<Recurso> recursoList;
     private final OnItemClickListener itemClickListener;
 
-    public DataAdapter(ArrayList<User> userList, OnItemClickListener listener) {
-        this.userList = userList;
+    public DataAdapter(ArrayList<Recurso> recursoList, OnItemClickListener listener) {
+        this.recursoList = recursoList;
         this.itemClickListener = listener;
     }
 
@@ -39,7 +39,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     /*specify the contents of each item of the RecyclerView*/
     @Override
     public void onBindViewHolder(DataAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.bind(userList.get(i), itemClickListener);
+        viewHolder.bind(recursoList.get(i), itemClickListener);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return userList.size();
+        return recursoList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -66,26 +66,26 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             tvUserAge = (TextView) view.findViewById(R.id.tvUserAge);
         }
 
-        public void bind(final User user, final OnItemClickListener listener) {
-            tvUserName.setText(user.getName());
-            if (user.getImageId() == 1) {
+        public void bind(final Recurso recurso, final OnItemClickListener listener) {
+            tvUserName.setText(recurso.getName());
+            if (recurso.getImageId() == 1) {
                 ivUserImage.setImageResource(R.drawable.android_1);
-            } else if (user.getImageId() == 2) {
+            } else if (recurso.getImageId() == 2) {
                 ivUserImage.setImageResource(R.drawable.android_2);
             } else {
                 ivUserImage.setImageResource(R.drawable.android_3);
             }
-            tvUserAge.setText(user.getAge() + " Years Old");
+            tvUserAge.setText(recurso.getAge() + " Years Old");
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemClickListener.onItemClick(user);
+                    itemClickListener.onItemClick(recurso);
                 }
             });
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(User user);
+        void onItemClick(Recurso recurso);
     }
 }

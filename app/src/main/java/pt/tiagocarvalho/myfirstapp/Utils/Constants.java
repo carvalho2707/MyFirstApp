@@ -5,7 +5,7 @@ package pt.tiagocarvalho.myfirstapp.utils;
  */
 
 public class Constants {
-    public static final String SELECTED_USER = "SELECTED_USER";
+    public static final String SELECTED_RECURSO = "SELECTED_RECURSO";
     public static final String PERSON_NAME = "PERSON_NAME";
     public static final String PERSON_AGE_MIN = "PERSON_AGE_MIN";
     public static final String PERSON_AGE_MAX = "PERSON_AGE_MAX";
