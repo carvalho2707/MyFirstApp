@@ -38,7 +38,7 @@ public class SearchActivity extends AppCompatActivity {
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
                 intent.putExtra(Constants.PERSON_NAME, etPersonName.getText().toString());
                 intent.putExtra(Constants.PERSON_STATE, sState.getSelectedItem().toString());
                 intent.putExtra(Constants.PERSON_AGE_MIN, rangeSeekBar.getSelectedMinValue());

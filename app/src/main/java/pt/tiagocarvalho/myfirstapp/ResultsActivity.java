@@ -2,27 +2,22 @@ package pt.tiagocarvalho.myfirstapp;
 
 import android.app.ActivityOptions;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Contacts;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Random;
@@ -32,7 +27,7 @@ import pt.tiagocarvalho.myfirstapp.adapter.DataAdapter;
 import pt.tiagocarvalho.myfirstapp.model.User;
 import pt.tiagocarvalho.myfirstapp.utils.Utils;
 
-public class MainActivity extends AppCompatActivity {
+public class ResultsActivity extends AppCompatActivity {
     private String personName;
     private String personState;
     private int minAge;
@@ -51,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             minAge = extras.getInt(Constants.PERSON_AGE_MIN);
             maxAge = extras.getInt(Constants.PERSON_AGE_MAX);
             techList = extras.getString(Constants.PERSON_TECH);
-            //userArrayList = Utils.filterData(userArrayList, personName, minAge, maxAge, techList, personState);
+            userArrayList = Utils.filterData(userArrayList, personName, minAge, maxAge, techList, personState);
         }
 
 
@@ -73,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(Constants.SELECTED_USER, gson.toJson(item, User.class));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     startActivity(intent,
-                            ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
+                            ActivityOptions.makeSceneTransitionAnimation(ResultsActivity.this).toBundle());
                 } else {
                     startActivity(intent);
                 }
@@ -132,13 +127,16 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<User> generateData() {
         ArrayList<User> userArrayList = new ArrayList<>();
         Random rand = new Random();
-        ArrayList<String> list = new ArrayList<String>() {{
+        ArrayList<String> list1 = new ArrayList<String>() {{
             add("Java");
             add("SQL");
             add("Android");
         }};
+        ArrayList<String> list2 = new ArrayList<String>() {{
+            add("Android");
+        }};
 
-        ContentResolver cr = MainActivity.this.getContentResolver();
+        ContentResolver cr = ResultsActivity.this.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         if (cur.getCount() > 0) {
             while (cur.moveToNext()) {
@@ -151,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
 
                 user.setName(name);
                 user.setAge(20 + rand.nextInt(50));
-                user.setTechList(list);
                 int idPic = rand.nextInt(3);
                 if (idPic == 0) {
                     user.setImageId(1);
@@ -162,6 +159,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (!TextUtils.isEmpty(name)) {
                     userArrayList.add(user);
+                }
+                idPic = rand.nextInt(2);
+                if (idPic == 0) {
+                    user.setTechList(list1);
+                } else if (idPic == 1) {
+                    user.setTechList(list2);
                 }
             }
         }

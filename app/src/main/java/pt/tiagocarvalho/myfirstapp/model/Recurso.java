@@ -7,14 +7,42 @@ import java.util.ArrayList;
  * Created by tiago.carvalho on 12/19/16.
  */
 
-public class User implements Serializable {
+public class Recurso implements Serializable {
+    private int id;
     private String name;
     private int age;
-    private ArrayList<String> techList;
     private int imageId;
+    private String email;
+
+    public Recurso(int id, String name, String email, int age, int imageId) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.imageId = imageId;
+        this.email = email;
+    }
+
+    public Recurso() {
+    }
 
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setName(String name) {
@@ -27,14 +55,6 @@ public class User implements Serializable {
 
     public void setAge(int age) {
         this.age = age;
-    }
-
-    public ArrayList<String> getTechList() {
-        return techList;
-    }
-
-    public void setTechList(ArrayList<String> techList) {
-        this.techList = techList;
     }
 
     public int getImageId() {
