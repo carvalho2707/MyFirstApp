@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(RECURSO_COLUMN_AGE, recurso.getAge());
         contentValues.put(RECURSO_COLUMN_IMAGE_ID, recurso.getImageId());
         long result = db.insert(RECURSO_TABLE_NAME, null, contentValues);
+        Log.d("TIAGO", ""+ result);
         return result;
     }
 
@@ -131,7 +133,7 @@ public class DBHelper extends SQLiteOpenHelper {
         selectQuery.append(" and age < " + maxAge);
 
         if (!TextUtils.isEmpty(name)) {
-            selectQuery.append(" and name = " + name);
+            selectQuery.append(" and name = '" + name + "'");
         }
 
         SQLiteDatabase db = this.getWritableDatabase();

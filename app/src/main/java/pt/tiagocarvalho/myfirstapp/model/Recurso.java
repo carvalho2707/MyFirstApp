@@ -22,6 +22,13 @@ public class Recurso implements Serializable {
         this.email = email;
     }
 
+    public Recurso(String name, String email, int age, int imageId) {
+        this.name = name;
+        this.age = age;
+        this.imageId = imageId;
+        this.email = email;
+    }
+
     public Recurso() {
     }
 

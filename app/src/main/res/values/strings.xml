@@ -7,4 +7,6 @@
     <string name="search_button">Procurar</string>
     <string name="search_title">Procurar Recursos</string>
     <string name="search_estado">Estado</string>
+    <string name="button_create">Create</string>
+    <string name="button_cancel">Cancel</string>
 </resources>
