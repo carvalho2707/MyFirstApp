@@ -11,21 +11,21 @@ public class Recurso implements Serializable {
     private int id;
     private String name;
     private int age;
-    private int imageId;
     private String email;
+    private byte[] image;
 
-    public Recurso(int id, String name, String email, int age, int imageId) {
+    public Recurso(int id, String name, String email, int age, byte[] image) {
         this.id = id;
         this.name = name;
         this.age = age;
-        this.imageId = imageId;
+        this.image = image;
         this.email = email;
     }
 
-    public Recurso(String name, String email, int age, int imageId) {
+    public Recurso(String name, String email, int age, byte[] image) {
         this.name = name;
         this.age = age;
-        this.imageId = imageId;
+        this.image = image;
         this.email = email;
     }
 
@@ -64,11 +64,11 @@ public class Recurso implements Serializable {
         this.age = age;
     }
 
-    public int getImageId() {
-        return imageId;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setImageId(int imageId) {
-        this.imageId = imageId;
+    public void setImageId(byte[] imageId) {
+        this.image = image;
     }
 }

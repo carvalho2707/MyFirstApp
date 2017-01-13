@@ -1,6 +1,8 @@
 package pt.tiagocarvalho.myfirstapp.adapter;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -68,11 +70,17 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
         public void bind(final Recurso recurso, final OnItemClickListener listener) {
             tvUserName.setText(recurso.getName());
-            if (recurso.getImageId() == 1) {
+          /*  if (recurso.getImageId() == 1) {
                 ivUserImage.setImageResource(R.drawable.android_1);
             } else if (recurso.getImageId() == 2) {
                 ivUserImage.setImageResource(R.drawable.android_2);
             } else {
+                ivUserImage.setImageResource(R.drawable.android_3);
+            }*/
+            if(recurso.getImage() != null){
+                Bitmap bMap = BitmapFactory.decodeByteArray(recurso.getImage(), 0, recurso.getImage().length);
+                ivUserImage.setImageBitmap(bMap);
+            }else{
                 ivUserImage.setImageResource(R.drawable.android_3);
             }
             tvUserAge.setText(recurso.getAge() + " Years Old");

@@ -20,13 +20,13 @@ import pt.tiagocarvalho.myfirstapp.model.Recurso;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "ResourceFinder.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String RECURSO_TABLE_NAME = "recurso";
     private static final String RECURSO_COLUMN_ID = "id";
     private static final String RECURSO_COLUMN_NAME = "name";
     private static final String RECURSO_COLUMN_EMAIL = "email";
     private static final String RECURSO_COLUMN_AGE = "age";
-    private static final String RECURSO_COLUMN_IMAGE_ID = "image_id";
+    private static final String RECURSO_COLUMN_IMAGE = "image";
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + RECURSO_TABLE_NAME + " (" +
@@ -34,7 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     RECURSO_COLUMN_NAME + " TEXT," +
                     RECURSO_COLUMN_EMAIL + " TEXT," +
                     RECURSO_COLUMN_AGE + " INTEGER," +
-                    RECURSO_COLUMN_IMAGE_ID + " INTEGER )";
+                    RECURSO_COLUMN_IMAGE + " BLOB )";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + RECURSO_TABLE_NAME;
@@ -60,9 +60,9 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(RECURSO_COLUMN_NAME, recurso.getName());
         contentValues.put(RECURSO_COLUMN_EMAIL, recurso.getEmail());
         contentValues.put(RECURSO_COLUMN_AGE, recurso.getAge());
-        contentValues.put(RECURSO_COLUMN_IMAGE_ID, recurso.getImageId());
+        contentValues.put(RECURSO_COLUMN_IMAGE, recurso.getImage());
         long result = db.insert(RECURSO_TABLE_NAME, null, contentValues);
-        Log.d("TIAGO", ""+ result);
+        Log.d("TIAGO", "" + result);
         return result;
     }
 
@@ -72,7 +72,7 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        Recurso recurso = new Recurso(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getInt(4));
+        Recurso recurso = new Recurso(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getBlob(4));
         return recurso;
     }
 
@@ -92,7 +92,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 recurso.setName(cursor.getString(1));
                 recurso.setEmail(cursor.getString(2));
                 recurso.setAge(cursor.getInt(3));
-                recurso.setImageId(cursor.getInt(4));
+                recurso.setImageId(cursor.getBlob(4));
 
                 recursoList.add(recurso);
             } while (cursor.moveToNext());
@@ -113,7 +113,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(RECURSO_COLUMN_NAME, recurso.getName());
         contentValues.put(RECURSO_COLUMN_EMAIL, recurso.getEmail());
         contentValues.put(RECURSO_COLUMN_AGE, recurso.getAge());
-        contentValues.put(RECURSO_COLUMN_IMAGE_ID, recurso.getImageId());
+        contentValues.put(RECURSO_COLUMN_IMAGE, recurso.getImage());
         return db.update(RECURSO_TABLE_NAME, contentValues, "id = ? ", new String[]{Integer.toString(recurso.getId())});
     }
 
@@ -147,7 +147,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 recurso.setName(cursor.getString(1));
                 recurso.setEmail(cursor.getString(2));
                 recurso.setAge(cursor.getInt(3));
-                recurso.setImageId(cursor.getInt(4));
+                recurso.setImageId(cursor.getBlob(4));
 
                 recursoList.add(recurso);
             } while (cursor.moveToNext());

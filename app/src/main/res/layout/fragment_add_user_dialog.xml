@@ -1,74 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tvAddTitle"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:text="Add Resource"
-        android:textSize="24sp" />
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="351dp"
         android:layout_margin="@dimen/fab_margin"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/ibPictureAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="false"
+            android:background="@drawable/bordered_rectangle_rounded_corners"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:cropToPadding="false"
+            app:srcCompat="@drawable/ic_menu_camera" />
 
         <EditText
             android:id="@+id/etNameAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/ibPictureAdd"
             android:ems="10"
             android:hint="Name"
             android:inputType="textPersonName" />
 
-        <ImageView
-            android:id="@+id/imageView9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/etNameAdd"
-            android:adjustViewBounds="false"
-            android:cropToPadding="false"
-            app:srcCompat="@android:drawable/ic_dialog_email" />
-
         <EditText
-            android:id="@+id/editText8"
-            android:layout_width="wrap_content"
+            android:id="@+id/etEmailAdd"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentStart="true"
+            android:layout_below="@+id/etNameAdd"
+            android:ems="10"
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/etAgeAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_below="@+id/etEmailAdd"
             android:ems="10"
             android:hint="Age"
             android:inputType="number" />
-
-        <EditText
-            android:id="@+id/etEmailAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/etNameAdd"
-            android:layout_toEndOf="@+id/imageView9"
-            android:layout_toRightOf="@+id/imageView9"
-            android:ems="10"
-            android:hint="Email"
-            android:inputType="textEmailAddress" />
 
     </RelativeLayout>
 
