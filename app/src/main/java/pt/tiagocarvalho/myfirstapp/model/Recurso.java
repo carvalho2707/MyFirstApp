@@ -8,13 +8,13 @@ import java.util.ArrayList;
  */
 
 public class Recurso implements Serializable {
-    private int id;
+    private long id;
     private String name;
     private int age;
     private String email;
-    private byte[] image;
+    private String image;
 
-    public Recurso(int id, String name, String email, int age, byte[] image) {
+    public Recurso(long id, String name, String email, int age, String image) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -22,7 +22,7 @@ public class Recurso implements Serializable {
         this.email = email;
     }
 
-    public Recurso(String name, String email, int age, byte[] image) {
+    public Recurso(String name, String email, int age, String image) {
         this.name = name;
         this.age = age;
         this.image = image;
@@ -36,11 +36,11 @@ public class Recurso implements Serializable {
         return name;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -64,11 +64,11 @@ public class Recurso implements Serializable {
         this.age = age;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImageId(byte[] imageId) {
+    public void setImage(String image) {
         this.image = image;
     }
 }

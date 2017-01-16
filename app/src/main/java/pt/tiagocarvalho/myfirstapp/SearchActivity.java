@@ -85,7 +85,7 @@ public class SearchActivity extends AppCompatActivity implements AddUserDialog.A
     }
 
     @Override
-    public void onDialogPositiveClick(DialogFragment dialog, String name, String email, String age, byte[] image) {
+    public void onDialogPositiveClick(DialogFragment dialog, String name, String email, String age, String image) {
         // User touched the dialog's positive button
         Recurso recurso = new Recurso(name, email, Integer.valueOf(age), image);
         myDb.addRecurso(recurso);

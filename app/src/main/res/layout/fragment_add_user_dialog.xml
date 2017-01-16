@@ -8,22 +8,22 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="351dp"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:orientation="vertical"
         tools:layout_height="wrap_content">
 
         <ImageButton
             android:id="@+id/ibPictureAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:scaleType="fitXY"
+            android:layout_height="100dp"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="false"
-            android:background="@drawable/bordered_rectangle_rounded_corners"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:cropToPadding="false"
-            app:srcCompat="@drawable/ic_menu_camera" />
+            android:maxWidth="50dp"
+            android:maxHeight="50dp"
+            android:background="@android:drawable/sym_def_app_icon"/>
 
         <EditText
             android:id="@+id/etNameAdd"

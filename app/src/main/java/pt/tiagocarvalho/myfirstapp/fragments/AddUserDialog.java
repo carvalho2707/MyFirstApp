@@ -3,6 +3,8 @@ package pt.tiagocarvalho.myfirstapp.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -25,6 +27,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -36,11 +40,12 @@ public class AddUserDialog extends DialogFragment {
     private EditText etMail;
     private EditText etAge;
     private ImageButton ibPicture;
-    private byte[] selectedPhoto;
+    private Bitmap selectedPhoto;
+    private String photoName;
     private static final int PICK_IMAGE_REQUEST = 1;
 
     public interface AddUserDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog, String name, String email, String age, byte[] image);
+        public void onDialogPositiveClick(DialogFragment dialog, String name, String email, String age, String image);
     }
 
     @Override
@@ -73,7 +78,8 @@ public class AddUserDialog extends DialogFragment {
                 .setPositiveButton(R.string.button_create, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        mListener.onDialogPositiveClick(AddUserDialog.this, etName.getText().toString(), etMail.getText().toString(), etAge.getText().toString(), selectedPhoto);
+                        String path = saveToInternalStorage(selectedPhoto, photoName);
+                        mListener.onDialogPositiveClick(AddUserDialog.this, etName.getText().toString(), etMail.getText().toString(), etAge.getText().toString(), path);
                     }
                 })
                 .setNegativeButton(R.string.button_cancel, new DialogInterface.OnClickListener() {
@@ -102,34 +108,59 @@ public class AddUserDialog extends DialogFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == 200 && data != null && data.getData() != null) {
-
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == -1 && data != null && data.getData() != null) {
             Uri uri = data.getData();
+            Cursor cursor = null;
+            try {
+                cursor = getActivity().getContentResolver().query(uri, new String[]{
+                        MediaStore.Images.ImageColumns.DISPLAY_NAME
+                }, null, null, null);
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    photoName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
+                }
+            } finally {
+
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
 
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-                // Log.d(TAG, String.valueOf(bitmap));
-
-                ibPicture.setImageBitmap(bitmap);
+                selectedPhoto = bitmap;
                 BitmapDrawable ob = new BitmapDrawable(getResources(), bitmap);
                 ibPicture.setBackground(ob);
-
-                int bytes = bitmap.getByteCount();
-//or we can calculate bytes this way. Use a different value than 4 if you don't use 32bit images.
-//int bytes = b.getWidth()*b.getHeight()*4;
-
-                ByteBuffer buffer = ByteBuffer.allocate(bytes); //Create a new buffer
-                bitmap.copyPixelsToBuffer(buffer); //Move the byte data to the buffer
-
-                byte[] array = buffer.array(); //Get the underlying array containing the data.
-                Log.d("TIAGO", array.toString());
-                selectedPhoto = array;
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
     }
 
+    private String saveToInternalStorage(Bitmap bitmapImage, String name) {
+        bitmapImage = Bitmap.createScaledBitmap(bitmapImage, 64, 64, false);
+        ContextWrapper cw = new ContextWrapper(getActivity().getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        String fullpath = directory.getPath() + File.separator + name;
+        File mypath = new File(fullpath);
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return fullpath;
+    }
 
 }

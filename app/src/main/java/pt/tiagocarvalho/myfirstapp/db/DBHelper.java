@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -20,24 +21,26 @@ import pt.tiagocarvalho.myfirstapp.model.Recurso;
 
 public class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "ResourceFinder.db";
-    private static final int DATABASE_VERSION = 2;
-    private static final String RECURSO_TABLE_NAME = "recurso";
-    private static final String RECURSO_COLUMN_ID = "id";
-    private static final String RECURSO_COLUMN_NAME = "name";
-    private static final String RECURSO_COLUMN_EMAIL = "email";
-    private static final String RECURSO_COLUMN_AGE = "age";
-    private static final String RECURSO_COLUMN_IMAGE = "image";
+    private static final int DATABASE_VERSION = 1;
+
+    public static class RecursoEntry implements BaseColumns {
+        public static final String TABLE_NAME = "recurso";
+        private static final String COLUMN_NAME_NAME = "name";
+        private static final String COLUMN_NAME_EMAIL = "email";
+        private static final String COLUMN_NAME_AGE = "age";
+        private static final String COLUMN_NAME_IMAGE = "image";
+    }
 
     private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + RECURSO_TABLE_NAME + " (" +
-                    RECURSO_COLUMN_ID + " INTEGER PRIMARY KEY," +
-                    RECURSO_COLUMN_NAME + " TEXT," +
-                    RECURSO_COLUMN_EMAIL + " TEXT," +
-                    RECURSO_COLUMN_AGE + " INTEGER," +
-                    RECURSO_COLUMN_IMAGE + " BLOB )";
+            "CREATE TABLE " + RecursoEntry.TABLE_NAME + " (" +
+                    RecursoEntry._ID + " INTEGER PRIMARY KEY," +
+                    RecursoEntry.COLUMN_NAME_NAME + " TEXT," +
+                    RecursoEntry.COLUMN_NAME_EMAIL + " TEXT," +
+                    RecursoEntry.COLUMN_NAME_AGE + " INTEGER," +
+                    RecursoEntry.COLUMN_NAME_IMAGE + " TEXT )";
 
     private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + RECURSO_TABLE_NAME;
+            "DROP TABLE IF EXISTS " + RecursoEntry.TABLE_NAME;
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -57,11 +60,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public long addRecurso(Recurso recurso) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(RECURSO_COLUMN_NAME, recurso.getName());
-        contentValues.put(RECURSO_COLUMN_EMAIL, recurso.getEmail());
-        contentValues.put(RECURSO_COLUMN_AGE, recurso.getAge());
-        contentValues.put(RECURSO_COLUMN_IMAGE, recurso.getImage());
-        long result = db.insert(RECURSO_TABLE_NAME, null, contentValues);
+        contentValues.put(RecursoEntry.COLUMN_NAME_NAME, recurso.getName());
+        contentValues.put(RecursoEntry.COLUMN_NAME_EMAIL, recurso.getEmail());
+        contentValues.put(RecursoEntry.COLUMN_NAME_AGE, recurso.getAge());
+        contentValues.put(RecursoEntry.COLUMN_NAME_IMAGE, recurso.getImage());
+        long result = db.insert(RecursoEntry.TABLE_NAME, null, contentValues);
         Log.d("TIAGO", "" + result);
         return result;
     }
@@ -72,83 +75,53 @@ public class DBHelper extends SQLiteOpenHelper {
         if (cursor != null)
             cursor.moveToFirst();
 
-        Recurso recurso = new Recurso(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getBlob(4));
+        Recurso recurso = new Recurso(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getInt(3), cursor.getString(4));
         return recurso;
-    }
-
-    public List<Recurso> getAllRecursos() {
-        List<Recurso> recursoList = new ArrayList<Recurso>();
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + RECURSO_TABLE_NAME;
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                Recurso recurso = new Recurso();
-                recurso.setId(cursor.getInt(0));
-                recurso.setName(cursor.getString(1));
-                recurso.setEmail(cursor.getString(2));
-                recurso.setAge(cursor.getInt(3));
-                recurso.setImageId(cursor.getBlob(4));
-
-                recursoList.add(recurso);
-            } while (cursor.moveToNext());
-        }
-
-        return recursoList;
-    }
-
-    public int getRecursosCount() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, RECURSO_TABLE_NAME);
-        return numRows;
-    }
-
-    public int updateRecurso(Recurso recurso) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(RECURSO_COLUMN_NAME, recurso.getName());
-        contentValues.put(RECURSO_COLUMN_EMAIL, recurso.getEmail());
-        contentValues.put(RECURSO_COLUMN_AGE, recurso.getAge());
-        contentValues.put(RECURSO_COLUMN_IMAGE, recurso.getImage());
-        return db.update(RECURSO_TABLE_NAME, contentValues, "id = ? ", new String[]{Integer.toString(recurso.getId())});
-    }
-
-    public int deleteRecurso(Recurso recurso) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(RECURSO_TABLE_NAME,
-                "id = ? ",
-                new String[]{Integer.toString(recurso.getId())});
     }
 
     public ArrayList<Recurso> queryRecursos(String name, int minAge, int maxAge) {
         ArrayList<Recurso> recursoList = new ArrayList<Recurso>();
         // Select All Query
-        StringBuilder selectQuery = new StringBuilder("SELECT  * FROM " + RECURSO_TABLE_NAME);
+        String[] projection = {
+                RecursoEntry._ID,
+                RecursoEntry.COLUMN_NAME_NAME,
+                RecursoEntry.COLUMN_NAME_EMAIL,
+                RecursoEntry.COLUMN_NAME_AGE,
+                RecursoEntry.COLUMN_NAME_IMAGE
+        };
 
-        selectQuery.append(" where age > " + minAge);
-        selectQuery.append(" and age < " + maxAge);
+        List<String> args = new ArrayList<>();
+        args.add(String.valueOf(minAge));
+        args.add(String.valueOf(maxAge));
+
+        String selection = RecursoEntry.COLUMN_NAME_AGE + " > ? AND " + RecursoEntry.COLUMN_NAME_AGE + " < ? ";
 
         if (!TextUtils.isEmpty(name)) {
-            selectQuery.append(" and name = '" + name + "'");
+            selection += " and name = ?";
+            args.add(name);
         }
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery.toString(), null);
+        String[] selectionArgs = args.toArray(new String[args.size()]);
 
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.query(
+                RecursoEntry.TABLE_NAME,                     // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                selectionArgs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+
+        if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             do {
                 Recurso recurso = new Recurso();
-                recurso.setId(cursor.getInt(0));
-                recurso.setName(cursor.getString(1));
-                recurso.setEmail(cursor.getString(2));
-                recurso.setAge(cursor.getInt(3));
-                recurso.setImageId(cursor.getBlob(4));
-
+                recurso.setId(cursor.getLong(cursor.getColumnIndexOrThrow(RecursoEntry._ID)));
+                recurso.setName(cursor.getString(cursor.getColumnIndexOrThrow(RecursoEntry.COLUMN_NAME_NAME)));
+                recurso.setEmail(cursor.getString(cursor.getColumnIndexOrThrow(RecursoEntry.COLUMN_NAME_EMAIL)));
+                recurso.setAge(cursor.getInt(cursor.getColumnIndexOrThrow(RecursoEntry.COLUMN_NAME_AGE)));
+                recurso.setImage(cursor.getString(cursor.getColumnIndexOrThrow(RecursoEntry.COLUMN_NAME_IMAGE)));
                 recursoList.add(recurso);
             } while (cursor.moveToNext());
         }

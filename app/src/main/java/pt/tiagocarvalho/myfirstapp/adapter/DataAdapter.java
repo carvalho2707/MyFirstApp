@@ -5,12 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import pt.tiagocarvalho.myfirstapp.R;
@@ -70,17 +74,11 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
         public void bind(final Recurso recurso, final OnItemClickListener listener) {
             tvUserName.setText(recurso.getName());
-          /*  if (recurso.getImageId() == 1) {
-                ivUserImage.setImageResource(R.drawable.android_1);
-            } else if (recurso.getImageId() == 2) {
-                ivUserImage.setImageResource(R.drawable.android_2);
-            } else {
-                ivUserImage.setImageResource(R.drawable.android_3);
-            }*/
-            if(recurso.getImage() != null){
-                Bitmap bMap = BitmapFactory.decodeByteArray(recurso.getImage(), 0, recurso.getImage().length);
+            Log.d("DEBUGTIAGO", recurso.getImage());
+            if (recurso.getImage() != null) {
+                Bitmap bMap = loadImageFromStorage(recurso.getImage());
                 ivUserImage.setImageBitmap(bMap);
-            }else{
+            } else {
                 ivUserImage.setImageResource(R.drawable.android_3);
             }
             tvUserAge.setText(recurso.getAge() + " Years Old");
@@ -95,5 +93,18 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
         void onItemClick(Recurso recurso);
+    }
+
+    private Bitmap loadImageFromStorage(String path) {
+
+        try {
+            File f = new File(path);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            return b;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
